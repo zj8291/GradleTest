@@ -1,5 +1,7 @@
 import 'package:flutter/services.dart';
 
+const String methodName_openMyTestActivity = "openMyTestActivity";
+
 class MethodChannelManager {
   MethodChannelManager._();
 

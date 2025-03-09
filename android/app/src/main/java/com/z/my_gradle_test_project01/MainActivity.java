@@ -19,6 +19,8 @@ public class MainActivity extends FlutterActivity {
 
     private static final String METHOD_CHANNEL = "nativeMethodChannel";
 
+    private static final String methodName_openMyTestActivity = "openMyTestActivity";
+
     MethodChannel methodChannel;
 
     @Override
@@ -36,12 +38,32 @@ public class MainActivity extends FlutterActivity {
     public void configureFlutterEngine(@NonNull FlutterEngine flutterEngine) {
         super.configureFlutterEngine(flutterEngine);
         methodChannel = new MethodChannel(flutterEngine.getDartExecutor().getBinaryMessenger(), METHOD_CHANNEL);
-        //设置方法调用的handler
+        // 设置方法调用的handler
         methodChannel.setMethodCallHandler(new MethodChannel.MethodCallHandler() {
             @Override
             public void onMethodCall(@NonNull MethodCall call, @NonNull MethodChannel.Result result) {
-                //TODO:可以写Flutter调用原生方法的回调
-
+                // TODO:可以写Flutter调用原生方法的回调
+                if (call.method.equals(methodName_openMyTestActivity)) {
+                    Integer clickNumber = (Integer) call.argument("clickNumber");
+                    if (clickNumber == null) {
+                        result.error("-1", "参数错误", null);
+                        return;
+                    }
+                    // 启动一个Activity
+                    Intent intent = new Intent(MainActivity.this, MyTestActivity.class);
+                    //Bundle用于存储键值对参数
+                    Bundle bundle = new Bundle();
+                    bundle.putInt("clickNumber", clickNumber);
+                    intent.putExtras(bundle);
+                    startActivity(intent);
+                    result.success(null);
+                } else {
+                    try {
+                        result.notImplemented();
+                    } catch (RuntimeException e) {
+                        e.printStackTrace();
+                    }
+                }
             }
         });
     }

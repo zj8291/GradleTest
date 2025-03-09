@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+import 'package:my_gradle_test_project01/methodChannelManager.dart';
 
 void main() {
   runApp(const MyApp());
@@ -58,6 +58,16 @@ class _MyHomePageState extends State<MyHomePage> {
               '$_counter',
               style: Theme.of(context).textTheme.headlineMedium,
             ),
+            SizedBox(
+              height: 20,
+            ),
+            TextButton(
+              onPressed: () {
+                MethodChannelManager.instance.nativeMethodChannel.invokeMethod(
+                    methodName_openMyTestActivity, {"clickNumber": _counter});
+              },
+              child: Text("开启原生中的自定义Activity"),
+            )
           ],
         ),
       ),

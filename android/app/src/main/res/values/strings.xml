@@ -1,0 +1,3 @@
+<resources>
+    <string name="clickTimes">this is my test activity,当前点击次数:%d</string>
+</resources>
