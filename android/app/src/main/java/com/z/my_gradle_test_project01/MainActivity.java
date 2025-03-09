@@ -20,6 +20,7 @@ public class MainActivity extends FlutterActivity {
     private static final String METHOD_CHANNEL = "nativeMethodChannel";
 
     private static final String methodName_openMyTestActivity = "openMyTestActivity";
+    private static final String methodName_share = "share";
 
     MethodChannel methodChannel;
 
@@ -49,12 +50,20 @@ public class MainActivity extends FlutterActivity {
                         result.error("-1", "参数错误", null);
                         return;
                     }
-                    // 启动一个Activity
+                    // 启动一个Activity（显式Intent启动Activity，显式Intent指明哪个具体的组件）
                     Intent intent = new Intent(MainActivity.this, MyTestActivity.class);
-                    //Bundle用于存储键值对参数
+                    // Bundle用于存储键值对参数
                     Bundle bundle = new Bundle();
                     bundle.putInt("clickNumber", clickNumber);
                     intent.putExtras(bundle);
+                    startActivity(intent);
+                    result.success(null);
+                } else if (call.method.equals(methodName_share)) {
+                    String shareContent = call.argument("shareContent");
+                    // 分享内容 （隐式Intent，不指明需要哪个具体的组件，由操作系统决定哪个组件）
+                    Intent intent = new Intent(Intent.ACTION_SEND);
+                    intent.setType("text/plain");
+                    intent.putExtra(Intent.EXTRA_TEXT, shareContent);
                     startActivity(intent);
                     result.success(null);
                 } else {

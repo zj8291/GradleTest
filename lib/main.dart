@@ -58,16 +58,33 @@ class _MyHomePageState extends State<MyHomePage> {
               '$_counter',
               style: Theme.of(context).textTheme.headlineMedium,
             ),
-            SizedBox(
+            const SizedBox(
               height: 20,
             ),
             TextButton(
+              style: const ButtonStyle(
+                  backgroundColor:
+                      MaterialStatePropertyAll(Colors.lightBlueAccent)),
               onPressed: () {
                 MethodChannelManager.instance.nativeMethodChannel.invokeMethod(
                     methodName_openMyTestActivity, {"clickNumber": _counter});
               },
               child: Text("开启原生中的自定义Activity"),
-            )
+            ),
+            const SizedBox(
+              height: 20,
+            ),
+            TextButton(
+              style: const ButtonStyle(
+                  backgroundColor:
+                      MaterialStatePropertyAll(Colors.lightBlueAccent)),
+              onPressed: () {
+                MethodChannelManager.instance.nativeMethodChannel.invokeMethod(
+                    methodName_share,
+                    {"shareContent": "我今天点击了按钮$_counter下，我好棒"});
+              },
+              child: Text("分享功能"),
+            ),
           ],
         ),
       ),
