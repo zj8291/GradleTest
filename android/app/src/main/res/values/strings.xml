@@ -2,4 +2,5 @@
     <string name="clickTimes">this is my test activity,当前点击次数:%d</string>
     <string name="shareContent">分享的文案内容:%s</string>
     <string name="noneShareContent">无分享内容</string>
+    <string name="serviceCount">当前服务计数进度:%d</string>
 </resources>

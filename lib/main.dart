@@ -85,6 +85,34 @@ class _MyHomePageState extends State<MyHomePage> {
               },
               child: Text("分享功能"),
             ),
+            const SizedBox(
+              height: 20,
+            ),
+            TextButton(
+              style: const ButtonStyle(
+                  backgroundColor:
+                      MaterialStatePropertyAll(Colors.lightBlueAccent)),
+              onPressed: () {
+                MethodChannelManager.instance.nativeMethodChannel.invokeMethod(
+                  methodName_startService,
+                );
+              },
+              child: Text("StartService"),
+            ),
+            const SizedBox(
+              height: 20,
+            ),
+            TextButton(
+              style: const ButtonStyle(
+                  backgroundColor:
+                      MaterialStatePropertyAll(Colors.lightBlueAccent)),
+              onPressed: () {
+                MethodChannelManager.instance.nativeMethodChannel.invokeMethod(
+                  methodName_bindService,
+                );
+              },
+              child: Text("BindService"),
+            ),
           ],
         ),
       ),

@@ -1,7 +1,10 @@
 package com.z.my_gradle_test_project01;
 
+import android.content.ComponentName;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.util.Log;
 import android.widget.TextView;
 
@@ -10,6 +13,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+
+import com.z.my_gradle_test_project01.service.MyTestService;
 
 /**
  * activity生命周期
@@ -22,7 +27,7 @@ public class MyTestActivity extends AppCompatActivity {
 
     TextView textView_1;
     TextView textView_2;
-
+    TextView textView_3;
 
     /**
      * onCreate方法 Activity 首次创建时调用
@@ -41,6 +46,7 @@ public class MyTestActivity extends AppCompatActivity {
         });
         textView_1 = findViewById(R.id.textView_1);
         textView_2 = findViewById(R.id.textView_2);
+        textView_3 = findViewById(R.id.textView_3);
     }
 
     /**
@@ -68,6 +74,34 @@ public class MyTestActivity extends AppCompatActivity {
         int clickNumber = extras.getInt("clickNumber");
         String clickTimes = getString(R.string.clickTimes, clickNumber);
         textView_1.setText(clickTimes);
+
+        Intent bindServiceIntent = new Intent(MyTestActivity.this, MyTestService.class);
+        ServiceConnection serviceConnection = new ServiceConnection() {
+            //Service绑定成功的回调
+            @Override
+            public void onServiceConnected(ComponentName name, IBinder service) {
+                ((MyTestService.MyTestServiceBinder) service).myTestService.count.addListener(new MyTestService.MyTestServiceLiveData.OnDataChangedListener<Integer>() {
+                    @Override
+                    public void onDataChanged(Integer data) {
+                        String serviceCount = getString(R.string.serviceCount, data);
+                        ///注意，视图只能由UI线程更新！！！
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                textView_3.setText(serviceCount);
+                            }
+                        });
+                    }
+                });
+            }
+
+            //Service解绑成功的回调
+            @Override
+            public void onServiceDisconnected(ComponentName name) {
+
+            }
+        };
+        bindService(bindServiceIntent, serviceConnection, BIND_AUTO_CREATE);
     }
 
     /**
