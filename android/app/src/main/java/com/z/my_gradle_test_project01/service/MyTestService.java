@@ -9,9 +9,7 @@ import android.util.Log;
 import androidx.annotation.Nullable;
 
 import com.z.my_gradle_test_project01.MyExecutor;
-
-import java.util.ArrayList;
-import java.util.List;
+import com.z.my_gradle_test_project01.model.MyServiceLiveData;
 
 
 /**
@@ -28,7 +26,7 @@ import java.util.List;
 public class MyTestService extends Service {
     private static final String TAG = "MyTestService";
 
-    public MyTestServiceLiveData<Integer> count = new MyTestServiceLiveData<>(0);
+    public MyServiceLiveData<Integer> count = new MyServiceLiveData<>(0);
 
     public MyTestService() {
     }
@@ -90,43 +88,4 @@ public class MyTestService extends Service {
         }
     }
 
-    /**
-     * MyTestService的数据包装，用于通知外部数据更新
-     */
-    public static class MyTestServiceLiveData<T> {
-
-        T data;
-
-        private final List<OnDataChangedListener<T>> _listeners = new ArrayList<>();
-
-        public MyTestServiceLiveData(T data) {
-            this.data = data;
-        }
-
-        public void changeData(T newData) {
-            data = newData;
-            notifyListener(data);
-        }
-
-        public MyTestServiceLiveData<T> changeDataWithResult(T newData) {
-            data = newData;
-            notifyListener(data);
-            return this;
-        }
-
-
-        public interface OnDataChangedListener<T> {
-            void onDataChanged(T data);
-        }
-
-        private void notifyListener(T data) {
-            for (OnDataChangedListener<T> listener : _listeners) {
-                listener.onDataChanged(data);
-            }
-        }
-
-        public void addListener(OnDataChangedListener<T> listener) {
-            _listeners.add(listener);
-        }
-    }
 }

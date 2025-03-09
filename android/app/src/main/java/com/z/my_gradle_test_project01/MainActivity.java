@@ -3,6 +3,7 @@ package com.z.my_gradle_test_project01;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.os.PersistableBundle;
@@ -10,7 +11,11 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
+import com.z.my_gradle_test_project01.model.MyServiceLiveData;
+import com.z.my_gradle_test_project01.service.MyTestForegroundService;
 import com.z.my_gradle_test_project01.service.MyTestService;
 
 
@@ -28,6 +33,7 @@ public class MainActivity extends FlutterActivity {
     private static final String methodName_share = "share";
     private static final String methodName_startService = "startService";
     private static final String methodName_bindService = "bindService";
+    private static final String methodName_bindForegroundService = "bindForegroundService";
 
     MethodChannel methodChannel;
 
@@ -51,7 +57,6 @@ public class MainActivity extends FlutterActivity {
         methodChannel.setMethodCallHandler(new MethodChannel.MethodCallHandler() {
             @Override
             public void onMethodCall(@NonNull MethodCall call, @NonNull MethodChannel.Result result) {
-                // TODO:可以写Flutter调用原生方法的回调
                 if (call.method.equals(methodName_openMyTestActivity)) {
                     Integer clickNumber = (Integer) call.argument("clickNumber");
                     if (clickNumber == null) {
@@ -84,7 +89,7 @@ public class MainActivity extends FlutterActivity {
                         //Service绑定成功的回调
                         @Override
                         public void onServiceConnected(ComponentName name, IBinder service) {
-                            ((MyTestService.MyTestServiceBinder) service).myTestService.count.addListener(new MyTestService.MyTestServiceLiveData.OnDataChangedListener<Integer>() {
+                            ((MyTestService.MyTestServiceBinder) service).myTestService.count.addListener(new MyServiceLiveData.OnDataChangedListener<Integer>() {
                                 @Override
                                 public void onDataChanged(Integer data) {
 
@@ -98,6 +103,29 @@ public class MainActivity extends FlutterActivity {
 
                         }
                     };
+                    bindService(intent, serviceConnection, BIND_AUTO_CREATE);
+                } else if (call.method.equals(methodName_bindForegroundService)) {
+                    ///前台服务
+                    Intent intent = new Intent(MainActivity.this, MyTestForegroundService.class);
+                    ServiceConnection serviceConnection = new ServiceConnection() {
+                        //Service绑定成功的回调
+                        @Override
+                        public void onServiceConnected(ComponentName name, IBinder service) {
+                            ((MyTestForegroundService.MyTestForgroundServiceBinder) service).myServiceLiveData.addListener(new MyServiceLiveData.OnDataChangedListener<Integer>() {
+                                @Override
+                                public void onDataChanged(Integer data) {
+                                    Log.d(TAG, "onDataChanged: MyTestForegroundService_" + data);
+                                }
+                            });
+                        }
+
+                        //Service解绑成功的回调
+                        @Override
+                        public void onServiceDisconnected(ComponentName name) {
+
+                        }
+                    };
+                    startService(intent);
                     bindService(intent, serviceConnection, BIND_AUTO_CREATE);
                 } else {
                     try {

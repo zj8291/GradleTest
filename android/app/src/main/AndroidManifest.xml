@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
+    <!-- Android 9(API28)之后，若需要开启前台服务，需要申请权限 -->
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
     <!--
          Required to query activities that can process text, see:
          https://developer.android.com/training/package-visibility?hl=en and
@@ -21,11 +24,15 @@
         android:icon="@mipmap/ic_launcher"
         android:label="Android原生测试">
         <service
+            android:name=".service.MyTestForegroundService"
+            android:enabled="true"
+
+            android:exported="true"
+            android:foregroundServiceType="mediaPlayback|remoteMessaging|camera|microphone" />
+        <service
             android:name=".service.MyTestService"
             android:enabled="true"
-            android:exported="true">
-
-        </service>
+            android:exported="true" />
 
         <activity
             android:name=".MyTestActivity"

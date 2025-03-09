@@ -14,6 +14,8 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.z.my_gradle_test_project01.model.MyServiceLiveData;
+import com.z.my_gradle_test_project01.service.MyTestForegroundService;
 import com.z.my_gradle_test_project01.service.MyTestService;
 
 /**
@@ -28,6 +30,7 @@ public class MyTestActivity extends AppCompatActivity {
     TextView textView_1;
     TextView textView_2;
     TextView textView_3;
+    TextView textView_4;
 
     /**
      * onCreate方法 Activity 首次创建时调用
@@ -47,6 +50,7 @@ public class MyTestActivity extends AppCompatActivity {
         textView_1 = findViewById(R.id.textView_1);
         textView_2 = findViewById(R.id.textView_2);
         textView_3 = findViewById(R.id.textView_3);
+        textView_4 = findViewById(R.id.textView_4);
     }
 
     /**
@@ -71,16 +75,61 @@ public class MyTestActivity extends AppCompatActivity {
         }
         // 获取参数
         Bundle extras = intent.getExtras();
-        int clickNumber = extras.getInt("clickNumber");
+        int clickNumber = 0;
+        if (extras != null) {
+            clickNumber = extras.getInt("clickNumber");
+        }
         String clickTimes = getString(R.string.clickTimes, clickNumber);
         textView_1.setText(clickTimes);
+        startFgService();
+        startBgService();
+    }
+
+    void startFgService() {
+        ///前台服务
+        Intent bindFGServiceIntent = new Intent(MyTestActivity.this, MyTestForegroundService.class);
+        ServiceConnection fgServiceConnection = new ServiceConnection() {
+            //Service绑定成功的回调
+            @Override
+            public void onServiceConnected(ComponentName name, IBinder service) {
+                ((MyTestForegroundService.MyTestForgroundServiceBinder) service).myServiceLiveData.addListener(new MyServiceLiveData.OnDataChangedListener<Integer>() {
+                    @Override
+                    public void onDataChanged(Integer data) {
+                        Log.d(TAG, "onDataChanged: MyTestForegroundService_" + data);
+                        String serviceCount = getString(R.string.foregroundServiceCount, data);
+                        ///注意，视图只能由UI线程更新！！！
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                textView_4.setText(serviceCount);
+                            }
+                        });
+                    }
+                });
+            }
+
+            //Service解绑成功的回调
+            @Override
+            public void onServiceDisconnected(ComponentName name) {
+
+            }
+        };
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+            startForegroundService(bindFGServiceIntent);
+        } else {
+            startService(bindFGServiceIntent);
+        }
+        bindService(bindFGServiceIntent, fgServiceConnection, BIND_AUTO_CREATE);
+    }
+
+    void startBgService() {
 
         Intent bindServiceIntent = new Intent(MyTestActivity.this, MyTestService.class);
         ServiceConnection serviceConnection = new ServiceConnection() {
             //Service绑定成功的回调
             @Override
             public void onServiceConnected(ComponentName name, IBinder service) {
-                ((MyTestService.MyTestServiceBinder) service).myTestService.count.addListener(new MyTestService.MyTestServiceLiveData.OnDataChangedListener<Integer>() {
+                ((MyTestService.MyTestServiceBinder) service).myTestService.count.addListener(new MyServiceLiveData.OnDataChangedListener<Integer>() {
                     @Override
                     public void onDataChanged(Integer data) {
                         String serviceCount = getString(R.string.serviceCount, data);
@@ -102,6 +151,7 @@ public class MyTestActivity extends AppCompatActivity {
             }
         };
         bindService(bindServiceIntent, serviceConnection, BIND_AUTO_CREATE);
+
     }
 
     /**

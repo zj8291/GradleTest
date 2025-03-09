@@ -113,6 +113,20 @@ class _MyHomePageState extends State<MyHomePage> {
               },
               child: Text("BindService"),
             ),
+            const SizedBox(
+              height: 20,
+            ),
+            TextButton(
+              style: const ButtonStyle(
+                  backgroundColor:
+                      MaterialStatePropertyAll(Colors.lightBlueAccent)),
+              onPressed: () {
+                MethodChannelManager.instance.nativeMethodChannel.invokeMethod(
+                  methodName_bindForegroundService,
+                );
+              },
+              child: Text("BindForegroundService"),
+            ),
           ],
         ),
       ),

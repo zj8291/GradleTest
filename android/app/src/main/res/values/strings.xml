@@ -2,5 +2,8 @@
     <string name="clickTimes">this is my test activity,当前点击次数:%d</string>
     <string name="shareContent">分享的文案内容:%s</string>
     <string name="noneShareContent">无分享内容</string>
-    <string name="serviceCount">当前服务计数进度:%d</string>
+    <string name="serviceCount">当前后台服务计数进度:%d</string>
+    <string name="foregroundServiceCount">当前前台服务计数进度:%d</string>
+    <string name="channel_name">MyTestForegroundServiceChannelId</string>
+    <string name="channel_description">做一些测试</string>
 </resources>

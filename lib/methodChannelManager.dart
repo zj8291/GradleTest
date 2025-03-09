@@ -6,6 +6,7 @@ const String methodName_openUrlBySystemDefault = "openUrlBySystemDefault";
 const String methodName_callTo = "callTo";
 const String methodName_startService = "startService";
 const String methodName_bindService = "bindService";
+const String methodName_bindForegroundService = "bindForegroundService";
 
 class MethodChannelManager {
   MethodChannelManager._();
