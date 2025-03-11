@@ -5,27 +5,16 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".activity.MyTestActivity">
+    tools:context=".activity.MyShareIntentHandleActivity">
 
     <TextView
-        android:id="@+id/textView_1"
+        android:id="@+id/textView_shareIntentContent"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/clickTimes"
-        android:textSize="20dp"
+        android:text="TextView"
+        android:textSize="34sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
-
-    <Button
-        android:id="@+id/button_test_back"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="64dp"
-        android:text="携带参数返回"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView_1" />
-
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -31,6 +31,12 @@ public class MyExecutor {
         executorService.execute(runnable);
     }
 
+    public Thread executeWithNewThread(Runnable runnable) {
+        Thread thread = new Thread(runnable);
+        thread.start();
+        return thread;
+    }
+
     public <T> T execute(Callable<T> callable) throws ExecutionException, InterruptedException {
         return executorService.submit(callable).get();
     }

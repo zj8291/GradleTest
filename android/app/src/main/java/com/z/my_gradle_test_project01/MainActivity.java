@@ -4,16 +4,23 @@ import android.content.ComponentName;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.os.PersistableBundle;
 import android.util.Log;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
+import com.z.my_gradle_test_project01.activity.MyBindServiceActivity;
+import com.z.my_gradle_test_project01.activity.MyCustomViewForegroundServiceActivity;
+import com.z.my_gradle_test_project01.activity.MyForegroundServiceActivity;
+import com.z.my_gradle_test_project01.activity.MyStartServiceActivity;
+import com.z.my_gradle_test_project01.activity.MyTestActivity;
 import com.z.my_gradle_test_project01.model.MyServiceLiveData;
 import com.z.my_gradle_test_project01.service.MyTestForegroundService;
 import com.z.my_gradle_test_project01.service.MyTestService;
@@ -34,6 +41,10 @@ public class MainActivity extends FlutterActivity {
     private static final String methodName_startService = "startService";
     private static final String methodName_bindService = "bindService";
     private static final String methodName_bindForegroundService = "bindForegroundService";
+    private static final String methodName_startCustomViewForegroundService =
+            "startCustomViewForegroundService";
+
+    private static final int REQUEST_NOTIFICATION_PERMISSION = 1001;
 
     MethodChannel methodChannel;
 
@@ -43,10 +54,34 @@ public class MainActivity extends FlutterActivity {
         Log.d(TAG, "onCreate: 执行");
     }
 
+    ///请求权限结果的回调
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == REQUEST_NOTIFICATION_PERMISSION) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                // 权限已授予，可以启动服务
+                Toast.makeText(this, "通知权限请求成功", Toast.LENGTH_SHORT).show();
+            } else {
+                // 权限被拒绝，提示用户
+                Toast.makeText(this, "需要通知权限才能正常运行服务", Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
     @Override
     protected void onStart() {
         super.onStart();
         Log.d(TAG, "onStart: 执行");
+        // 请求通知权限
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.POST_NOTIFICATIONS) !=
+                    PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(this,
+                        new String[]{android.Manifest.permission.POST_NOTIFICATIONS},
+                        REQUEST_NOTIFICATION_PERMISSION);
+            }
+        }
     }
 
     @Override
@@ -81,52 +116,17 @@ public class MainActivity extends FlutterActivity {
                     result.success(null);
                 } else if (call.method.equals(methodName_startService)) {
                     //使用startService方法启动Service，当MainActivity执行onDestroy方法后，startService依然可以继续执行其中的任务
-                    Intent intent = new Intent(MainActivity.this, MyTestService.class);
-                    startService(intent);
+                    Intent intent = new Intent(MainActivity.this, MyStartServiceActivity.class);
+                    startActivity(intent);
                 } else if (call.method.equals(methodName_bindService)) {
-                    Intent intent = new Intent(MainActivity.this, MyTestService.class);
-                    ServiceConnection serviceConnection = new ServiceConnection() {
-                        //Service绑定成功的回调
-                        @Override
-                        public void onServiceConnected(ComponentName name, IBinder service) {
-                            ((MyTestService.MyTestServiceBinder) service).myTestService.count.addListener(new MyServiceLiveData.OnDataChangedListener<Integer>() {
-                                @Override
-                                public void onDataChanged(Integer data) {
-
-                                }
-                            });
-                        }
-
-                        //Service解绑成功的回调
-                        @Override
-                        public void onServiceDisconnected(ComponentName name) {
-
-                        }
-                    };
-                    bindService(intent, serviceConnection, BIND_AUTO_CREATE);
+                    Intent intent = new Intent(MainActivity.this, MyBindServiceActivity.class);
+                    startActivity(intent);
                 } else if (call.method.equals(methodName_bindForegroundService)) {
-                    ///前台服务
-                    Intent intent = new Intent(MainActivity.this, MyTestForegroundService.class);
-                    ServiceConnection serviceConnection = new ServiceConnection() {
-                        //Service绑定成功的回调
-                        @Override
-                        public void onServiceConnected(ComponentName name, IBinder service) {
-                            ((MyTestForegroundService.MyTestForgroundServiceBinder) service).myServiceLiveData.addListener(new MyServiceLiveData.OnDataChangedListener<Integer>() {
-                                @Override
-                                public void onDataChanged(Integer data) {
-                                    Log.d(TAG, "onDataChanged: MyTestForegroundService_" + data);
-                                }
-                            });
-                        }
-
-                        //Service解绑成功的回调
-                        @Override
-                        public void onServiceDisconnected(ComponentName name) {
-
-                        }
-                    };
-                    startService(intent);
-                    bindService(intent, serviceConnection, BIND_AUTO_CREATE);
+                    Intent intent = new Intent(MainActivity.this, MyForegroundServiceActivity.class);
+                    startActivity(intent);
+                } else if (call.method.equals(methodName_startCustomViewForegroundService)) {
+                    Intent intent = new Intent(MainActivity.this, MyCustomViewForegroundServiceActivity.class);
+                    startActivity(intent);
                 } else {
                     try {
                         result.notImplemented();

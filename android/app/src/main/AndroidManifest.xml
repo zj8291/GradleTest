@@ -23,10 +23,42 @@
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher"
         android:label="Android原生测试">
+
+
+        <activity
+            android:name=".activity.MyCustomViewForegroundServiceActivity"
+            android:exported="false"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+        <activity
+            android:name=".activity.MyForegroundServiceActivity"
+            android:exported="false"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+        <activity
+            android:name=".activity.MyBindServiceActivity"
+            android:exported="false"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+        <activity
+            android:name=".activity.MyStartServiceActivity"
+            android:exported="false"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+        <activity
+            android:name=".activity.MyShareIntentHandleActivity"
+            android:exported="true"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar">
+
+            <!-- 使得当前activity可以处理其他应用的分享内容(限定内容类型为text/plain) -->
+            <intent-filter>
+                <action android:name="android.intent.action.SEND" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+
+                <data android:mimeType="text/plain" />
+            </intent-filter>
+        </activity>
+
         <service
             android:name=".service.MyTestForegroundService"
             android:enabled="true"
-
             android:exported="true"
             android:foregroundServiceType="mediaPlayback|remoteMessaging|camera|microphone" />
         <service
@@ -34,8 +66,14 @@
             android:enabled="true"
             android:exported="true" />
 
+        <service
+            android:name=".service.MyCustomViewService"
+            android:enabled="true"
+            android:exported="true"
+            android:foregroundServiceType="mediaPlayback" />
+
         <activity
-            android:name=".MyTestActivity"
+            android:name=".activity.MyTestActivity"
             android:exported="true"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar">
 

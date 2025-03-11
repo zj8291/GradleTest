@@ -4,6 +4,10 @@
     <string name="noneShareContent">无分享内容</string>
     <string name="serviceCount">当前后台服务计数进度:%d</string>
     <string name="foregroundServiceCount">当前前台服务计数进度:%d</string>
-    <string name="channel_name">MyTestForegroundServiceChannelId</string>
+    <string name="serviceNotBind">当前服务未绑定</string>
+    <string name="serviceNotStart">当前服务未启动</string>
+    <string name="serviceStart">当前服务启动</string>
+    <string name="channel_name_foreground">MyTestForegroundServiceChannelId</string>
+    <string name="channel_name_custom_view_foreground">MyCustomViewForegroundServiceChannelId</string>
     <string name="channel_description">做一些测试</string>
 </resources>

@@ -28,6 +28,12 @@ public class MyTestService extends Service {
 
     public MyServiceLiveData<Integer> count = new MyServiceLiveData<>(0);
 
+    boolean isRunning = false;
+
+    Thread bindThread;
+    Thread startThread;
+
+
     public MyTestService() {
     }
 
@@ -35,23 +41,49 @@ public class MyTestService extends Service {
     public void onCreate() {
         super.onCreate();
         Log.d(TAG, "onCreate: Service");
+        isRunning = true;
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
         Log.d(TAG, "onDestroy: Service");
+        isRunning = false;
+        ///将任务终止
+        if (startThread != null && startThread.isAlive()) {
+            startThread.interrupt();
+        }
+        if (bindThread != null && bindThread.isAlive()) {
+            bindThread.interrupt();
+        }
     }
 
     @Override
     public IBinder onBind(Intent intent) {
         Log.d(TAG, "onBind: Service");
+        //耗时操作不可放在UI线程上
+        bindThread = MyExecutor.getInstance().executeWithNewThread(new Runnable() {
+            @Override
+            public void run() {
+                while (isRunning) {
+                    try {
+                        Log.d(TAG, "MyTestService onBind:" + count.changeDataWithResult(count.data - 1).data);
+                        Thread.sleep(1000);
+                    } catch (InterruptedException e) {
+                        return;
+                    }
+                }
+            }
+        });
         return new MyTestServiceBinder(null, this);
     }
 
     @Override
     public boolean onUnbind(Intent intent) {
         Log.d(TAG, "onUnbind: Service");
+        if (bindThread != null && bindThread.isAlive()) {
+            bindThread.interrupt();
+        }
         return super.onUnbind(intent);
     }
 
@@ -59,16 +91,16 @@ public class MyTestService extends Service {
     public int onStartCommand(Intent intent, int flags, int startId) {
         Log.d(TAG, "onStartCommand: Service");
         //耗时操作不可放在UI线程上
-        MyExecutor.getInstance().execute(new Runnable() {
+        startThread = MyExecutor.getInstance().executeWithNewThread(new Runnable() {
             @Override
             public void run() {
-                while (true) {
+                while (isRunning) {
                     try {
+                        Log.d(TAG, "MyTestService onStartCommand: " + count.changeDataWithResult(count.data + 1).data);
                         Thread.sleep(1000);
                     } catch (InterruptedException e) {
-                        throw new RuntimeException(e);
+                        return;
                     }
-                    Log.d(TAG, "onStartCommand: " + count.changeDataWithResult(count.data + 1).data);
                 }
             }
         });
@@ -87,5 +119,4 @@ public class MyTestService extends Service {
             this.myTestService = myTestService;
         }
     }
-
 }

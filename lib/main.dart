@@ -61,72 +61,7 @@ class _MyHomePageState extends State<MyHomePage> {
             const SizedBox(
               height: 20,
             ),
-            TextButton(
-              style: const ButtonStyle(
-                  backgroundColor:
-                      MaterialStatePropertyAll(Colors.lightBlueAccent)),
-              onPressed: () {
-                MethodChannelManager.instance.nativeMethodChannel.invokeMethod(
-                    methodName_openMyTestActivity, {"clickNumber": _counter});
-              },
-              child: Text("开启原生中的自定义Activity"),
-            ),
-            const SizedBox(
-              height: 20,
-            ),
-            TextButton(
-              style: const ButtonStyle(
-                  backgroundColor:
-                      MaterialStatePropertyAll(Colors.lightBlueAccent)),
-              onPressed: () {
-                MethodChannelManager.instance.nativeMethodChannel.invokeMethod(
-                    methodName_share,
-                    {"shareContent": "我今天点击了按钮$_counter下，我好棒"});
-              },
-              child: Text("分享功能"),
-            ),
-            const SizedBox(
-              height: 20,
-            ),
-            TextButton(
-              style: const ButtonStyle(
-                  backgroundColor:
-                      MaterialStatePropertyAll(Colors.lightBlueAccent)),
-              onPressed: () {
-                MethodChannelManager.instance.nativeMethodChannel.invokeMethod(
-                  methodName_startService,
-                );
-              },
-              child: Text("StartService"),
-            ),
-            const SizedBox(
-              height: 20,
-            ),
-            TextButton(
-              style: const ButtonStyle(
-                  backgroundColor:
-                      MaterialStatePropertyAll(Colors.lightBlueAccent)),
-              onPressed: () {
-                MethodChannelManager.instance.nativeMethodChannel.invokeMethod(
-                  methodName_bindService,
-                );
-              },
-              child: Text("BindService"),
-            ),
-            const SizedBox(
-              height: 20,
-            ),
-            TextButton(
-              style: const ButtonStyle(
-                  backgroundColor:
-                      MaterialStatePropertyAll(Colors.lightBlueAccent)),
-              onPressed: () {
-                MethodChannelManager.instance.nativeMethodChannel.invokeMethod(
-                  methodName_bindForegroundService,
-                );
-              },
-              child: Text("BindForegroundService"),
-            ),
+            buttonsView(),
           ],
         ),
       ),
@@ -135,6 +70,110 @@ class _MyHomePageState extends State<MyHomePage> {
         tooltip: 'Increment',
         child: const Icon(Icons.add),
       ), // This trailing comma makes auto-formatting nicer for build methods.
+    );
+  }
+
+  Widget buttonsView() {
+    return Container(
+      child: Column(
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              TextButton(
+                style: const ButtonStyle(
+                    backgroundColor:
+                        MaterialStatePropertyAll(Colors.lightBlueAccent)),
+                onPressed: () {
+                  MethodChannelManager.instance.nativeMethodChannel
+                      .invokeMethod(methodName_openMyTestActivity,
+                          {"clickNumber": _counter});
+                },
+                child: Text("启动Activity"),
+              ),
+              TextButton(
+                style: const ButtonStyle(
+                    backgroundColor:
+                        MaterialStatePropertyAll(Colors.lightBlueAccent)),
+                onPressed: () {
+                  MethodChannelManager.instance.nativeMethodChannel
+                      .invokeMethod(methodName_share,
+                          {"shareContent": "我今天点击了按钮$_counter下，我好棒"});
+                },
+                child: Text("点击分享文本"),
+              ),
+            ],
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              TextButton(
+                style: const ButtonStyle(
+                    backgroundColor:
+                        MaterialStatePropertyAll(Colors.lightBlueAccent)),
+                onPressed: () {
+                  MethodChannelManager.instance.nativeMethodChannel
+                      .invokeMethod(
+                    methodName_startService,
+                  );
+                },
+                child: Text("启动Activity后台服务"),
+              ),
+            ],
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              TextButton(
+                style: const ButtonStyle(
+                    backgroundColor:
+                        MaterialStatePropertyAll(Colors.lightBlueAccent)),
+                onPressed: () {
+                  MethodChannelManager.instance.nativeMethodChannel
+                      .invokeMethod(
+                    methodName_bindService,
+                  );
+                },
+                child: Text("启动Activity绑定服务"),
+              ),
+            ],
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              TextButton(
+                style: const ButtonStyle(
+                    backgroundColor:
+                        MaterialStatePropertyAll(Colors.lightBlueAccent)),
+                onPressed: () {
+                  MethodChannelManager.instance.nativeMethodChannel
+                      .invokeMethod(
+                    methodName_bindForegroundService,
+                  );
+                },
+                child: Text("启动Activity启动前台服务"),
+              ),
+            ],
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              TextButton(
+                style: const ButtonStyle(
+                    backgroundColor:
+                        MaterialStatePropertyAll(Colors.lightBlueAccent)),
+                onPressed: () {
+                  MethodChannelManager.instance.nativeMethodChannel
+                      .invokeMethod(
+                    methodName_startCustomViewForegroundService,
+                  );
+                },
+                child: Text("启动自定义View的前台服务"),
+              ),
+            ],
+          ),
+        ],
+      ),
     );
   }
 }
