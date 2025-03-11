@@ -43,11 +43,33 @@ android {
         versionName flutterVersionName
     }
 
+    ///不同buildType的签名配置
+//    signingConfigs {
+//        release {
+//            storeFile file("my-release-key.jks")
+//            storePassword "password"
+//            keyAlias "my-alias"
+//            keyPassword "password"
+//        }
+//        ///复制release的签名文件
+//        customBuildType {
+//            storeFile file("my-release-key2.jks")
+//            storePassword "password"
+//            keyAlias "my-alias"
+//            keyPassword "password"
+//        }
+//    }
+
     buildTypes {
         release {
-            // TODO: Add your own signing config for the release build.
-            // Signing with the debug keys for now, so `flutter run --release` works.
-            signingConfig signingConfigs.debug
+            // 为true启用代码缩减、混淆
+            minifyEnabled false
+            // 为true启用资源缩减，打包时，没有用到的资源将不会加到构建产物中
+            shrinkResources false
+            // 设置混淆规则
+            proguardFiles getDefaultProguardFile(
+                    'proguard-android-optimize.txt'),
+                    'proguard-rules.pro'
         }
 
         debug {
